@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Home page</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">Tvshow forum</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tvshows}">Tvshows</a>
+                </li>
+                <li class="nav-item">
+                    <a sec:authorize="hasRole('ADMIN')"
+                       class="nav-link" th:href="@{/tvshows}">Users</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form action="#" th:action="@{/logout}" method="post">
+                        <input type="submit" value="Log out">
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div>
+    <div style="text-align: center;">
+        <h1>Welcome on home page! </h1>
+
+        <hr>
+        <br>
+        <h3>This is forum for reviewing and discussing famous tvshows</h3>
+        <br>
+        If you wish to start browsing tvshows:
+            <a th:href="@{/tvshows}">
+                <u>click here </u>
+            </a>
+    </div>
+
+
+</div>
+
+</body>
+</html>
