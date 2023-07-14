@@ -8,10 +8,8 @@ public class WebComment {
 
     private int id = 0;
 
-    @NotNull
     private Review review;
 
-    @NotNull
     private User user;
 
     @NotNull

@@ -10,17 +10,14 @@ public class WebReview {
 
     private int id = 0;
 
-    @NotNull
     private Tvshow tvshow;
 
-    @NotNull
     private User user;
 
     private String title;
 
     private String description;
 
-    @NotNull
     @Min(0)
     @Max(10)
     private int rating;

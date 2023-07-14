@@ -9,5 +9,8 @@ public interface CommentService {
 
     List<Comment> findAll();
     void save(WebComment webComment);
+    void update(WebComment webComment);
+    void delete(Comment comment);
 
+    Comment findById(int id);
 }

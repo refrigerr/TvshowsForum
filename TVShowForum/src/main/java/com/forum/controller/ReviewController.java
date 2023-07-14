@@ -3,10 +3,14 @@ package com.forum.controller;
 import com.forum.entity.Category;
 import com.forum.entity.Review;
 import com.forum.entity.Tvshow;
+import com.forum.entity.User;
+import com.forum.model.WebComment;
+import com.forum.model.WebReview;
 import com.forum.model.WebTvshow;
 import com.forum.service.CategoryService;
 import com.forum.service.ReviewService;
 import com.forum.service.TvshowService;
+import com.forum.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,82 +27,82 @@ public class ReviewController {
 
     TvshowService tvshowService;
     ReviewService reviewService;
+    UserService userService;
 
     @Autowired
-    public ReviewController(TvshowService tvshowService, ReviewService reviewService){
+    public ReviewController(TvshowService tvshowService, ReviewService reviewService, UserService userService){
         this.tvshowService = tvshowService;
         this.reviewService = reviewService;
+        this.userService = userService;
     }
-
-    /*
-    @GetMapping
-    public String findAll(Model model){
-
-        return "tvshow/tvshows-list";
-    }
-
-     */
 
     @GetMapping("/{id}")
     public String showReview(@PathVariable("id") int id,Model model){
         Review review = reviewService.findById(id);
         model.addAttribute("review", review);
         model.addAttribute("loggedInUser", SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("webComment",new WebComment());
         return "review/review";
     }
 
     @GetMapping("/showReviewForm")
-    public String showTvShowForm(Model model) {
-
-        model.addAttribute("webTvshow", new WebTvshow());
-
-        return "tvshow/tvshow-form";
+    public String showReviewForm(@RequestParam("tvshowId") int tvshowId, Model model) {
+        model.addAttribute("webReview",new WebReview());
+        model.addAttribute("tvshowId", tvshowId);
+        return "review/review-form";
     }
 
     @GetMapping("/showReviewFormUpdate")
-    public String showTvShowFormUpdate(@RequestParam("tvshowId") int id, Model model) {
-        Tvshow tvshow = tvshowService.findById(id);
-        if(tvshow== null){
-            return "redirect:/tvshows";
+    public String showReviewFormUpdate(@RequestParam("reviewId") int id, Model model) {
+        Review review = reviewService.findById(id);
+        if(review == null) {
+            return "unexpected-error";
         }
+        WebReview webReview = new WebReview();
+        webReview.setId(review.getId());
+        webReview.setTitle(review.getTitle());
+        webReview.setDescription(review.getDescription());
+        webReview.setRating(review.getRating());
 
+        model.addAttribute("webReview", webReview);
+        model.addAttribute("tvshowId", review.getTvshow().getId());
 
-
-        return "tvshow/tvshow-form";
+        return "review/review-form";
     }
 
-    @PostMapping("/proccessTvshowForm")
-    public String proccessTvshowForm(@Valid @ModelAttribute("webTvshow") WebTvshow webTvshow,
-                                     @RequestParam("selectedCategories") List<Integer> categoriesIds,
-                                     BindingResult bindingResult,
+    @PostMapping("/proccessReviewForm")
+    public String proccessReviewForm(@Valid @ModelAttribute("webReview") WebReview webReview,
+                                     @RequestParam("tvshowIdToAssign") int tvshowId,
                                      Model model){
 
-        if(bindingResult.hasErrors()){
-            return "tvshow/tvshow-form";
+        Tvshow tvshow = tvshowService.findById(tvshowId);
+        User user = userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if(user == null || tvshow == null){
+            return "unexpected-error";
         }
 
-        Tvshow existing = tvshowService.findByName(webTvshow.getTitle());
-        if(existing != null){
-            model.addAttribute("webTvshow", new WebTvshow());
-            model.addAttribute("tvshowError", "Tvshow with that title already exists");
-            return "tvshow/tvshow-form";
-        }
+        webReview.setTvshow(tvshow);
+        webReview.setUser(user);
 
-        if (webTvshow.getId()==0)
-            tvshowService.save(webTvshow);
+        if (webReview.getId()==0)
+            reviewService.save(webReview);
         else
-            tvshowService.update(webTvshow);
+            reviewService.update(webReview);
+
+
 
         //redirecting to page with all tvshows
-        return "redirect:/tvshows";
+        return "redirect:/tvshows/"+tvshowId;
     }
 
 
     @GetMapping("/delete/{id}")
-    public String deleteTvshow(@PathVariable("id") int id){
-        Tvshow tvshow = tvshowService.findById(id);
-        tvshowService.delete(tvshow);
-        return "redirect:/tvshows";
+    public String deleteReview(@PathVariable("id") int id){
+        Review review = reviewService.findById(id);
+        int tvshowId = review.getTvshow().getId();
+        reviewService.delete(review);
+        return "redirect:/tvshows/"+tvshowId;
 
     }
 }

@@ -13,12 +13,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
-    private Logger logger = Logger.getLogger(getClass().getName());
 
     private UserService userService;
 
@@ -50,7 +48,6 @@ public class RegistrationController {
             HttpSession session, Model model) {
 
         String userName = webUser.getUserName();
-        logger.info("Processing registration form for: " + userName);
 
         // form validation
         if (bindingResult.hasErrors()){
@@ -63,7 +60,6 @@ public class RegistrationController {
             model.addAttribute("webUser", new WebUser());
             model.addAttribute("registrationError", "Account with this username already exists");
 
-            logger.warning("Account with this username already exists\"");
             return "register/registration-form";
         }
         existing = userService.findByEmail(webUser.getEmail());
@@ -72,14 +68,11 @@ public class RegistrationController {
             model.addAttribute("webUser", new WebUser());
             model.addAttribute("registrationError", "Account with this email already exists");
 
-            logger.warning("Account with this email already exists\"");
             return "register/registration-form";
         }
 
         // create user account and store in the database
         userService.save(webUser);
-
-        logger.info("Successfully created user: " + userName);
 
         // place user in the web http session for later use
         session.setAttribute("user", webUser);

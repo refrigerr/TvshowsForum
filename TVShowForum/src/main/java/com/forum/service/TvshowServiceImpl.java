@@ -67,7 +67,6 @@ public class TvshowServiceImpl implements TvshowService{
         tvshow.setTitle(webTvshow.getTitle());
         tvshow.setDescription(webTvshow.getDescription());
         tvshow.setCategories(webTvshow.getCategories());
-
         tvshow.setAgeRating(webTvshow.getAgeRating());
         tvshow.setReviews(new HashSet<>());
 

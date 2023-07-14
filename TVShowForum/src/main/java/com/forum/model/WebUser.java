@@ -8,7 +8,7 @@ public class WebUser {
 
     @NotNull(message = "is required")
     @Size(min = 3, message = "minimum size is 3")
-    @Pattern(regexp="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+    @Pattern(regexp="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "is in incorrect format!")
     private String email;
 
     @NotNull(message = "is required")

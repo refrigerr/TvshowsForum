@@ -32,4 +32,23 @@ public class CommentServiceImpl implements CommentService{
 
         commentDao.save(comment);
     }
+
+    @Override
+    public void update(WebComment webComment) {
+        Comment comment = commentDao.findById(webComment.getId());
+        comment.setBody(webComment.getBody());
+        comment.setReview(webComment.getReview());
+
+        commentDao.update(comment);
+    }
+
+    @Override
+    public void delete(Comment comment) {
+        commentDao.delete(comment);
+    }
+
+    @Override
+    public Comment findById(int id) {
+        return commentDao.findById(id);
+    }
 }

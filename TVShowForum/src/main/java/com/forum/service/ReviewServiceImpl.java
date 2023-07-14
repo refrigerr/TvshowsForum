@@ -41,9 +41,23 @@ public class ReviewServiceImpl implements ReviewService{
         review.setDescription(webReview.getDescription());
         review.setUser(webReview.getUser());
         review.setTvshow(webReview.getTvshow());
-        review.setRating(review.getRating());
+        review.setRating(webReview.getRating());
 
         reviewDao.save(review);
 
+    }
+
+    @Override
+    public void update(WebReview webReview) {
+        Review review = reviewDao.findById(webReview.getId());
+        review.setTitle(webReview.getTitle());
+        review.setDescription(webReview.getDescription());
+        review.setRating(webReview.getRating());
+        reviewDao.update(review);
+    }
+
+    @Override
+    public void delete(Review review) {
+        reviewDao.delete(review);
     }
 }

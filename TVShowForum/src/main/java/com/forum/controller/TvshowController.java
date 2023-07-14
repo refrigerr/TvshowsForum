@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -68,7 +69,7 @@ public class TvshowController {
         webTvshow.setAgeRating(tvshow.getAgeRating());
         webTvshow.setDescription(tvshow.getDescription());
         webTvshow.setId(tvshow.getId());
-        webTvshow.setTitle(webTvshow.getTitle());
+        webTvshow.setTitle(tvshow.getTitle());
         webTvshow.setCategories(tvshow.getCategories());
         model.addAttribute("webTvshow", webTvshow);
         model.addAttribute("categories", categories);
@@ -79,26 +80,38 @@ public class TvshowController {
 
     @PostMapping("/proccessTvshowForm")
     public String proccessTvshowForm(@Valid @ModelAttribute("webTvshow") WebTvshow webTvshow,
-                                     @RequestParam("selectedCategories") List<Integer> categoriesIds,
+                                     @RequestParam(value = "selectedCategories", required = false) List<Integer> categoriesIds,
                                      BindingResult bindingResult,
                                      Model model){
 
         if(bindingResult.hasErrors()){
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
+            model.addAttribute("webTvshow", webTvshow);
             return "tvshow/tvshow-form";
         }
 
+        Tvshow thisTvShow = tvshowService.findById(webTvshow.getId());
         Tvshow existing = tvshowService.findByName(webTvshow.getTitle());
-        if(existing != null){
+
+        if(existing != null && !thisTvShow.equals(existing)){
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
             model.addAttribute("webTvshow", new WebTvshow());
             model.addAttribute("tvshowError", "Tvshow with that title already exists");
             return "tvshow/tvshow-form";
         }
 
         //converting ids into categories
-        for (Integer i :
-                categoriesIds) {
-            webTvshow.addCategory(categoryService.findById(i));
+        if(categoriesIds != null){
+            for (Integer i :
+                    categoriesIds) {
+                webTvshow.addCategory(categoryService.findById(i));
+            }
+        }else {
+            webTvshow.setCategories(new HashSet<>());
         }
+
 
         if (webTvshow.getId()==0)
             tvshowService.save(webTvshow);

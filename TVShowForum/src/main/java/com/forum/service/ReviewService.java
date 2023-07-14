@@ -13,4 +13,6 @@ public interface ReviewService {
     Review findById(int id);
     Review findByIdWithComments(int id);
     void save(WebReview webReview);
+    void update(WebReview webReview);
+    void delete(Review review);
 }

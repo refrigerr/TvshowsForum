@@ -1,7 +1,10 @@
 package com.forum.model;
 
 import com.forum.entity.Category;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +12,8 @@ public class WebTvshow {
 
     private int id = 0;
 
-    @NotNull(message = "is required")
+    @Size(min = 1, message = "minimum size is 1")
+    @NotBlank(message = "can not be blank")
     private String title;
 
     private String description;

@@ -15,17 +15,31 @@
     <title>Tvshow Directory</title>
 </head>
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-md bg-dark navbar-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" th:href="@{/}">Tvshow forum</a>
+        <span class="navbar-brand">Tvshow forum</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a sec:authorize="hasRole('ADMIN')"
+                       class="nav-link" th:href="@{/tvshows}">Tvshows</a>
+                </li>
+                <li class="nav-item">
+                    <a sec:authorize="hasRole('ADMIN')"
+                       class="nav-link" th:href="@{/tvshows}">Users</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form action="#" th:action="@{/logout}" method="post">
+                        <input type="submit" value="Log out">
+                    </form>
+                </li>
+            </ul>
         </div>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li><a class="nav-link" th:href="@{/tvshows}">Tvshows</a></li>
-
-            <li><a class="nav-link" th:href="@{/tvshows}">Users</a></li>
-
-        </ul>
     </div>
 </nav>
 
