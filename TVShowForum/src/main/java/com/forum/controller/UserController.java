@@ -27,6 +27,7 @@ public class UserController {
     public String findAll(Model model){
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
         return "user/user-list";
     }
 

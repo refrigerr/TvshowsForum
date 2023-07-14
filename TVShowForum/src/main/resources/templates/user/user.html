@@ -45,13 +45,13 @@
     <h3>Username: <span th:text="${user.getUserName()}" ></span></h3>
     <h3>Email: <span th:text="${user.getEmail()}"></span></h3>
     <h3>Roles: <span th:text="${user.getRoles()}"></span></h3>
-
+    <h3>User's reviews: <span th:text="${user.getRoles()}"></span></h3>
     <div>
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
             <tr>
+                <th>TV show</th>
                 <th>Title</th>
-                <th>Author</th>
                 <th>Rating</th>
                 <td>Actions</td>
             </tr>
@@ -59,9 +59,12 @@
 
             <tbody>
             <tr th:each="tempReview : ${user.getReviews()}">
+                <td>
+                    <a th:href="@{/tvshows/{id}(id=${tempReview.getTvshow().getId()})}" th:text="${tempReview.getTvshow().getTitle()}">
 
+                    </a>
+                </td>
                 <td th:text="${tempReview.getTitle()}" />
-                <td th:text="${tempReview.getUser().getUserName()}" />
                 <td th:text="${tempReview.getRating()} + '/10'" />
 
                 <td>

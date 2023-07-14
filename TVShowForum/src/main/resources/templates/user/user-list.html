@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
     <title>Title</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">Tvshow forum</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tvshows}">Tvshows</a>
+                </li>
+                <li class="nav-item">
+                    <a sec:authorize="hasRole('ADMIN')"
+                       class="nav-link" th:href="@{/users}">Users</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span style="color: lightgray">Logged in as: <span th:text="${loggedInUser.getUserName()}"></span></span>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/{id}(id=${loggedInUser.id})}">View your profile</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form action="#" th:action="@{/logout}" method="post">
+                        <input type="submit" value="Log out">
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
+<div class="container">
+    <h3>TV show Directory</h3>
+    <hr>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="tempUser : ${users}">
+
+            <td th:text="${tempUser.getUserName()}" />
+            <td th:text="${tempUser.getEmail()}" />
+
+            <td>
+
+                <a th:href="@{/users/{id}(id=${tempUser.getId()})}"
+                   class="btn btn-success btn-sm">
+                    Show
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/users/delete/{id}(id=${tempUser.getId()})}"
+                   class="btn btn-danger btn-sm" onclick="if (!(confirm('Are you sure you want to delete this User?'))) return false">
+                    Delete
+                </a>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

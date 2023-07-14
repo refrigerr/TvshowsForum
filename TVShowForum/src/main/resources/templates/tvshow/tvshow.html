@@ -83,7 +83,9 @@
             <tr th:each="tempReview : ${tvshow.getReviews()}">
 
                 <td th:text="${tempReview.getTitle()}" />
-                <td th:text="${tempReview.getUser().getUserName()}" />
+                <td>
+                    <a th:href="@{/users/{id}(id=${tempReview.getUser().id})}" th:text="${tempReview.getUser().getUserName()}"></a>
+                </td>
                 <td th:text="${tempReview.getRating()} + '/10'" />
 
                 <td>
