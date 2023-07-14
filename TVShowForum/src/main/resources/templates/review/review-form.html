@@ -21,12 +21,21 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a sec:authorize="hasRole('ADMIN')"
-             class="nav-link" th:href="@{/tvshows}">Tvshows</a>
+          <a class="nav-link" th:href="@{/tvshows}">Tvshows</a>
         </li>
         <li class="nav-item">
           <a sec:authorize="hasRole('ADMIN')"
-             class="nav-link" th:href="@{/tvshows}">Users</a>
+             class="nav-link" th:href="@{/users}">Users</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item">
+          <span style="color: lightgray">Logged in as: <span th:text="${loggedInUser.getUserName()}"></span></span>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/users/{id}(id=${loggedInUser.id})}">View your profile</a>
         </li>
       </ul>
       <ul class="nav navbar-nav ml-auto">

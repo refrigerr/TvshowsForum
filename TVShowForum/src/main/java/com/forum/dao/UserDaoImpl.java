@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Year;
+import java.util.List;
 
 @Repository
 public class UserDaoImpl implements UserDao{
@@ -78,6 +79,19 @@ public class UserDaoImpl implements UserDao{
 
         }
         return user;
+    }
+
+    @Override
+    public List<User> findAll() {
+        TypedQuery<User> query = entityManager.createQuery(
+                "select u from User u", User.class);
+        List<User> users = null;
+        try {
+            users = query.getResultList();
+        } catch (Exception ignored) {
+
+        }
+        return users;
     }
 
 

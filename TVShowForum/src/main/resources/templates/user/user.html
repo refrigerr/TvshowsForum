@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
-    <title>Tvshow</title>
+    <title>User</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -20,21 +20,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/tvshows}">Tvshows</a>
+                    <a sec:authorize="hasRole('ADMIN')"
+                       class="nav-link" th:href="@{/tvshows}">Tvshows</a>
                 </li>
                 <li class="nav-item">
                     <a sec:authorize="hasRole('ADMIN')"
-                       class="nav-link" th:href="@{/users}">Users</a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item">
-                    <span style="color: lightgray">Logged in as: <span th:text="${loggedInUser.getUserName()}"></span></span>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/users/{id}(id=${loggedInUser.id})}">View your profile</a>
+                       class="nav-link" th:href="@{/tvshows}">Users</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav ml-auto">
@@ -49,25 +40,12 @@
 </nav>
 <div style="margin-top: 15px" class="container">
 
-    <a  th:href="@{/tvshows}" class="btn btn-info btn-sm">
-        Go back to list of Tvshows
-    </a>
 
 
-    <h1 style="margin-top: 30px" th:text="${tvshow.getTitle()}"></h1>
-    <hr>
+    <h3>Username: <span th:text="${user.getUserName()}" ></span></h3>
+    <h3>Email: <span th:text="${user.getEmail()}"></span></h3>
+    <h3>Roles: <span th:text="${user.getRoles()}"></span></h3>
 
-    <h3 >Categories: <span th:text="${tvshow.displayCategories()}"> </span></h3>
-    <h3 >Age rating: <span th:text="${tvshow.getAgeRating()}"> </span>+</h3>
-    <br>
-    <h2>Description: </h2>
-    <p style="word-wrap: break-word; width: 500px" th:text="${tvshow.getDescription()}"></p>
-
-    <h2 style="display: inline-block; vertical-align: middle;">Reviews: </h2>
-    <a style="float: right; margin-bottom: 10px; " th:href="@{/reviews/showReviewForm(tvshowId=${tvshow.id})}"
-       class="btn btn-info btn-sm">
-        Add review to this Tvshow
-    </a>
     <div>
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
@@ -80,7 +58,7 @@
             </thead>
 
             <tbody>
-            <tr th:each="tempReview : ${tvshow.getReviews()}">
+            <tr th:each="tempReview : ${user.getReviews()}">
 
                 <td th:text="${tempReview.getTitle()}" />
                 <td th:text="${tempReview.getUser().getUserName()}" />
@@ -93,12 +71,12 @@
                         Show
                     </a>
 
-                    <a th:if="${tempReview.getUser().getUserName() == loggedInUser}"  th:href="@{/reviews/showReviewFormUpdate(reviewId=${tempReview.getId()})}"
+                    <a th:if="${isAuthenticatedToModify}" th:href="@{/reviews/showReviewFormUpdate(reviewId=${tempReview.getId()})}"
                        class="btn btn-info btn-sm">
                         Update
                     </a>
 
-                    <a sec:authorize="hasRole('MODERATOR')" th:href="@{/reviews/delete/{id}(id=${tempReview.getId()})}"
+                    <a th:if="${isAuthenticatedToModify}" th:href="@{/reviews/delete/{id}(id=${tempReview.getId()})}"
                        class="btn btn-danger btn-sm" onclick="if (!(confirm('Are you sure you want to delete this Review?'))) return false">
                         Delete
                     </a>

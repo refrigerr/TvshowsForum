@@ -3,11 +3,9 @@ package com.forum.controller;
 import com.forum.entity.Category;
 import com.forum.entity.Tvshow;
 import com.forum.model.WebTvshow;
-import com.forum.model.WebUser;
 import com.forum.service.CategoryService;
-import com.forum.service.CategoryServiceImpl;
 import com.forum.service.TvshowService;
-import jakarta.servlet.http.HttpSession;
+import com.forum.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,16 +24,19 @@ public class TvshowController {
 
     TvshowService tvshowService;
     CategoryService categoryService;
+    UserService userService;
 
     @Autowired
-    public TvshowController(TvshowService tvshowService, CategoryService categoryService){
+    public TvshowController(TvshowService tvshowService, CategoryService categoryService, UserService userService){
         this.tvshowService = tvshowService;
         this.categoryService = categoryService;
+        this.userService = userService;
     }
 
     @GetMapping
     public String findAll(Model model){
         List<Tvshow> tvshows = tvshowService.findAll();
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
         model.addAttribute("tvshows",tvshows);
         return "tvshow/tvshows-list";
     }
@@ -44,7 +45,7 @@ public class TvshowController {
     public String showTvshow(@PathVariable("id") int id, Model model){
         Tvshow tvshow = tvshowService.findByIdWithEverything(id);
         model.addAttribute("tvshow",tvshow);
-        model.addAttribute("loggedInUser", SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
         return "tvshow/tvshow";
     }
 
@@ -53,7 +54,7 @@ public class TvshowController {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("webTvshow", new WebTvshow());
         model.addAttribute("categories", categories);
-
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
 
         return "tvshow/tvshow-form";
     }
@@ -62,7 +63,7 @@ public class TvshowController {
     public String showTvShowFormUpdate(@RequestParam("tvshowId") int id, Model model) {
         List<Category> categories = categoryService.findAll();
         Tvshow tvshow = tvshowService.findById(id);
-        if(tvshow== null){
+        if(tvshow == null){
             return "redirect:/tvshows";
         }
         WebTvshow webTvshow = new WebTvshow();
@@ -73,7 +74,7 @@ public class TvshowController {
         webTvshow.setCategories(tvshow.getCategories());
         model.addAttribute("webTvshow", webTvshow);
         model.addAttribute("categories", categories);
-
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
 
         return "tvshow/tvshow-form";
     }
@@ -99,6 +100,7 @@ public class TvshowController {
             model.addAttribute("categories", categories);
             model.addAttribute("webTvshow", new WebTvshow());
             model.addAttribute("tvshowError", "Tvshow with that title already exists");
+            model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
             return "tvshow/tvshow-form";
         }
 

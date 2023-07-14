@@ -40,13 +40,14 @@ public class ReviewController {
     public String showReview(@PathVariable("id") int id,Model model){
         Review review = reviewService.findById(id);
         model.addAttribute("review", review);
-        model.addAttribute("loggedInUser", SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
         model.addAttribute("webComment",new WebComment());
         return "review/review";
     }
 
     @GetMapping("/showReviewForm")
     public String showReviewForm(@RequestParam("tvshowId") int tvshowId, Model model) {
+        model.addAttribute("loggedInUser", userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
         model.addAttribute("webReview",new WebReview());
         model.addAttribute("tvshowId", tvshowId);
         return "review/review-form";

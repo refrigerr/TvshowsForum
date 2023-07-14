@@ -35,7 +35,7 @@ public class MySecurityConfig {
         httpSecurity.authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/").hasRole("USER")
-                                .requestMatchers("/systems/**").hasRole("ADMIN")
+                                .requestMatchers("/users").hasRole("ADMIN")
                                 .requestMatchers("/register/**").permitAll()
                                 .anyRequest().authenticated()
                 )

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -33,6 +34,11 @@ public class UserServiceImpl implements UserService{
         this.passwordEncoder = passwordEncoder;
     }
 
+
+    @Override
+    public List<User> findAll() {
+        return userDao.findAll();
+    }
 
     @Override
     public User findByEmail(String email) {
@@ -60,6 +66,11 @@ public class UserServiceImpl implements UserService{
 
         // save user in the database
         userDao.save(user);
+    }
+
+    @Override
+    public User findByIdWithReviews(int id) {
+        return userDao.findByIdWithReviews(id);
     }
 
     @Override
