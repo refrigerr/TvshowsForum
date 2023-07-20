@@ -4,11 +4,10 @@ import com.forum.entity.User;
 import com.forum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,10 +16,13 @@ import java.util.List;
 public class UserController {
 
     UserService userService;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, BCryptPasswordEncoder passwordEncoder){
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
     @GetMapping
@@ -43,8 +45,42 @@ public class UserController {
 
         model.addAttribute("user", user);
         model.addAttribute("reviews", user.getReviews());
+        model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("isAuthenticatedToModify", isAuthenticatedToModify);
         return "user/user";
+    }
+
+    @GetMapping("/showChangePassword")
+    public String changePassword(){
+        return "user/user-change-password-form";
+    }
+
+    @PostMapping("/processChangePassword")
+    public String processChangePassword(@RequestParam("oldPassword") String oldPassword,
+                                        @RequestParam("newPassword") String newPassword,
+                                        Model model){
+
+
+        User user = userService.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+            model.addAttribute("passwordError","Incorrect current password");
+            return "user/user-change-password-form";
+        }
+        if(newPassword.length()<3 || newPassword.isBlank()){
+            model.addAttribute("passwordError","Password minimum length is 3 and can't be blank");
+            return "user/user-change-password-form";
+        }
+
+        if(newPassword.equals(oldPassword)){
+            model.addAttribute("passwordError","New password can't be the same as current password");
+            return "user/user-change-password-form";
+        }
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+        user.setPassword(encodedNewPassword);
+        userService.update(user);
+        return "redirect:/users/"+user.getId();
     }
 
 }

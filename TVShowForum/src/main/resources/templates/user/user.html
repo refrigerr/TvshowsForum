@@ -20,12 +20,21 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a sec:authorize="hasRole('ADMIN')"
-                       class="nav-link" th:href="@{/tvshows}">Tvshows</a>
+                    <a class="nav-link" th:href="@{/tvshows}">Tvshows</a>
                 </li>
                 <li class="nav-item">
                     <a sec:authorize="hasRole('ADMIN')"
-                       class="nav-link" th:href="@{/tvshows}">Users</a>
+                       class="nav-link" th:href="@{/users}">Users</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span style="color: lightgray">Logged in as: <span th:text="${loggedInUser.getUserName()}"></span></span>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/{id}(id=${loggedInUser.id})}">View your profile</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav ml-auto">
@@ -40,12 +49,37 @@
 </nav>
 <div style="margin-top: 15px" class="container">
 
+    <!-- Place for messages: error, alert etc ... -->
+    <div class="form-group">
+        <div class="col-xs-15">
+            <div>
+
+                <!-- Check for login error -->
+
+                <div th:if="${info != null}">
+
+                    <div class="alert alert-success col-xs-offset-1 col-xs-10">
+                        <span th:text="${info}"></span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div style="display: inline-block; vertical-align: middle">
+        <h3 >Username: <span th:text="${user.getUserName()}" ></span></h3>
+        <h3>Email: <span th:text="${user.getEmail()}"></span></h3>
+        <h3>Roles: <span th:text="${user.getRoles()}"></span></h3>
+    </div>
+    <a style="float: right; margin-bottom: 10px; " th:href="@{/users/showChangePassword}"
+       class="btn btn-info btn-sm">
+        Change Password
+    </a>
+    <br>
 
 
-    <h3>Username: <span th:text="${user.getUserName()}" ></span></h3>
-    <h3>Email: <span th:text="${user.getEmail()}"></span></h3>
-    <h3>Roles: <span th:text="${user.getRoles()}"></span></h3>
-    <h3>User's reviews: <span th:text="${user.getRoles()}"></span></h3>
+    <h3>User's reviews:</h3>
     <div>
         <table class="table table-bordered table-striped">
             <thead class="table-dark">

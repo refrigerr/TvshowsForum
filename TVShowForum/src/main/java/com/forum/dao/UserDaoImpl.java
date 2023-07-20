@@ -102,6 +102,7 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
+    @Transactional
     public void update(User user) {
         entityManager.merge(user);
     }
@@ -111,5 +112,20 @@ public class UserDaoImpl implements UserDao{
     @Transactional
     public void delete(User user) {
         entityManager.remove(user);
+    }
+
+    @Override
+    public User findById(int id) {
+        TypedQuery<User> query = entityManager.createQuery(
+                "select u from User u " +
+                        "where u.id=:theId", User.class);
+        query.setParameter("theId", id);
+        User user = null;
+        try {
+            user = query.getSingleResult();
+        } catch (Exception ignored) {
+
+        }
+        return user;
     }
 }
